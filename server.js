@@ -38,7 +38,7 @@ Rushing
 Rushing Yards (RY)0.1
 TD Rush (RTD)6
 40+ yard TD rush bonus (RTD40)1
-50+ yard TD rush bonus (RTD50)1
+50+ yard TD rush bonus (RTD50)3
 2pt Rushing Conversion (2PR)2
 100-199 yard rushing game (RY100)1
 200+ yard rushing game (RY200)2
