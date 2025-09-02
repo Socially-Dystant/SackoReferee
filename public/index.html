@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Football Bot – The Referee</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f1f1;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ads {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 180px;
+    }
+    .ad {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      color: black;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .ad img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .chat-wrapper {
+      flex: 1;
+      max-width: 700px;
+      margin: 0 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    h2 {
+      margin-top: 0;
+      text-align: center;
+      color: #666;
+      font-size: 18px;
+      font-weight: normal;
+    }
+     h1 {
+      margin-top: 0;
+      text-align: center;
+      color: #1e3a8a;
+    }
+    #input-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    #input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 12px 16px;
+      font-size: 16px;
+      background-color: #1e3a8a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #messages {
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+      overflow-y: auto;
+      max-height: 500px;
+    }
+    .message {
+      margin: 8px 0;
+      padding: 10px;
+      background: #e6f0ff;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Ads -->
+    <div class="ads">
+      <a class="ad" href="https://www.youtube.com/watch?v=SU2S0HF9jAs" target="_blank">
+        <img src="lawyer.png" alt="Fantasy Lawyers" />
+        <p>Fantasy Football Legal Services</p>
+      </a>
+      <a class="ad" href="https://www.youtube.com/watch?v=SU2S0HF9jAs" target="_blank">
+        <img src="guru.png" alt="Draft Guru" />
+        <p>Win Your League with Draft Guru</p>
+      </a>
+    </div>
+
+    <!-- Chat Bot -->
+    <div class="chat-wrapper">
+      <h1>The Sacko Fantasy League Referee 🏈</h1>
+      <h2>(All decisions by this bot are FINAL)</h2>
+      <div id="input-section">
+        <input id="input" type="text" placeholder="Ask anything, or type your complaint..." onkeydown="if(event.key==='Enter'){send()}" />
+        <button onclick="send()">Send</button>
+      </div>
+        <div id="spinner" style="display: none; text-align: center; padding: 10px;">
+    <span>⏳ The Referee is reviewing the play...</span>
+    </div>
+        <div id="messages"></div>
+        </div>
+
+    <!-- Right Ads -->
+    <div class="ads">
+      <a class="ad" href="https://www.youtube.com/watch?v=SU2S0HF9jAs" target="_blank">
+        <img src="insurance.png" alt="Injury Insurance" />
+        <p>Protect Your Fantasy Stars</p>
+      </a>
+      <a class="ad" href="https://www.youtube.com/watch?v=SU2S0HF9jAs" target="_blank">
+        <img src="waiver wire.png" alt="Waiver Wire Wizard" />
+        <p>Top Waiver Wire Picks Weekly</p>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Persist unique user ID
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = crypto.randomUUID();
+      localStorage.setItem('userId', userId);
+    }
+
+    async function send() {
+        const input = document.getElementById('input');
+        const message = input.value.trim();
+        const spinner = document.getElementById('spinner');
+
+        if (!message) return;
+
+        addMessage('You', message);
+        input.value = '';
+        spinner.style.display = 'block'; // Show spinner
+
+        try {
+            const res = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message, userId })
+            });
+
+            const data = await res.json();
+            addMessage('The Referee', data.reply);
+        } catch (err) {
+            console.error('Error:', err);
+            addMessage('Error', 'Something went wrong. Try again later.');
+        } finally {
+            spinner.style.display = 'none'; // Hide spinner
+        }
+        }
+
+
+    function addMessage(sender, text) {
+      const msgDiv = document.getElementById('messages');
+      const bubble = document.createElement('div');
+      bubble.className = 'message';
+      bubble.innerHTML = `<strong>${sender}:</strong> ${text}`;
+      msgDiv.appendChild(bubble);
+      msgDiv.scrollTop = msgDiv.scrollHeight;
+    }
+  </script>
+</body>
+</html>
